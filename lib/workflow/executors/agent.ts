@@ -84,7 +84,7 @@ export async function executeAgentNode(
       : [{ role: 'user' as const, content: contextualPrompt }];
 
     // Parse model string (handle models with slashes like groq/openai/gpt-oss-120b)
-    const modelString = data.model || 'anthropic/claude-sonnet-4-5-20250929';
+    const modelString = data.model || 'anthropic/claude-sonnet-5-5';
     let provider: string;
     let modelName: string;
 
@@ -197,7 +197,9 @@ export async function executeAgentNode(
           messages: messages as any,
         });
 
-        responseText = response.content[0].type === 'text' ? response.content[0].text : '';
+        responseText = response.content
+          .map((block) => (block.type === 'text' ? block.text : ''))
+          .join('');
         usage = (response.usage as any) || {};
       }
     } else if (provider === 'openai' && apiKeys?.openai) {
